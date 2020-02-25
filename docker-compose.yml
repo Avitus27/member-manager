@@ -1,0 +1,21 @@
+version: "3.4"
+
+services:
+
+  db:
+    image: postgres:12.1
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: test123
+      POSTGRES_USER: mervyn
+
+  frontend:
+    build: ./apps/frontend
+    restart: always
+    ports:
+      - "5000:5000"
+
+  redis:
+    image: "redis:alpine"
+
+
