@@ -11,7 +11,7 @@ RUN pip3 install -q -r requirements.txt && \
 ENV FLASK_APP app.py
 ENV FLASK_RUN_HOST 0.0.0.0
 
-COPY . .
+COPY . /src
 
-CMD ["flask", "run"]
-
+# CMD ["flask", "run"]
+CMD ["gunicorn", "app:app -b 0.0.0.0:5000"]
