@@ -16,7 +16,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r apps/frontent/requirements.txt -r apps/frontend/requirements_test.txt
+        pip install -r apps/frontend/requirements.txt -r apps/frontend/requirements_test.txt
         pip install -r apps/db-api/requirements.txt -r apps/db-api/requirements_test.txt
     - name: Lint with flake8
       run: |
