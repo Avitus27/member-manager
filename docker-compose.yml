@@ -5,6 +5,10 @@ services:
   postgres:
     image: postgres:12.1
     restart: always
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - 54321:5432
     environment:
       POSTGRES_PASSWORD: test123
       POSTGRES_USER: mervyn
@@ -17,10 +21,18 @@ services:
     links:
       - postgres:postgres
     volumes:
-      - ./apps/frontend:/code
+      - ./apps/frontend:/src
     env_file: ./apps/frontend/.env
 
-  redis:
-    image: "redis:alpine"
+  db-api:
+    build: ./apps/db-api
+    restart: always
+    ports:
+      - 5051:5000
+    volumes:
+      - ./apps/db-api:/src
+    env_file: ./apps/db-api/.env
 
-
+volumes:
+  db-data:
+    driver: local
