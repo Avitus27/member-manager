@@ -14,3 +14,6 @@ restart:
 clean:
 	docker-compose rm --force --stop
 	docker-compose down --volumes
+
+db:
+	docker exec -it membermanager_db-api_1 python manage.py $(MAKECMDGOALS)

@@ -1,8 +1,11 @@
 import json
 
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+db = SQLAlchemy(app)
+
 
 @app.errorhandler(404)
 def not_found(e):
