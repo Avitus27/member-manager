@@ -8,6 +8,7 @@ manager = Manager(app)
 migrate = Migrate(app, db)
 manager.add_command('db', MigrateCommand)
 
+
 @manager.command
 def runserver(port=5000):
     os.environ["LOG_LEVEL"] = "DEBUG"

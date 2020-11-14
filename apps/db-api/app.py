@@ -10,7 +10,7 @@ db = SQLAlchemy(app)
 @app.errorhandler(404)
 def not_found(e):
     return app.response_class(
-            response=json.dumps({'error': 'Page Not Found','status': 404}),
+            response=json.dumps({'error': 'Page Not Found', 'status': 404}),
             status=404,
             mimetype='application/json'
         )
@@ -19,6 +19,3 @@ def not_found(e):
 @app.route('/')
 def hello():
     return 'This is a test\n'
-
-
-
