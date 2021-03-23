@@ -17,6 +17,18 @@ db = SQLAlchemy(app)
 
 from models import *
 
+def create_app():
+    app = Flask(__name__.split('.')[0])
+    app.url_map.strict_slashes = False
+    register_blueprints(app)
+    return app
+
+
+def register_blueprints(app):
+    # origins = app.config.get('CORS_ORIGIN_WHITELIST', '*')
+    app.register_blueprint(member.views.blueprint)
+
+
 @app.errorhandler(404)
 def not_found(e):
     return app.response_class(
