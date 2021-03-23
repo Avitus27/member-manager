@@ -1,0 +1,234 @@
+openapi: 3.0.0
+info:
+  description: "API for interacting with the Member Manager database"
+  version: 0.0.1
+  title: member-manager
+  contact:
+    name: "Mervyn Galvin"
+    email: "mervyn511@gmail.com"
+    url: "https://keybase.io/avitus7"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+paths:
+  /member:
+    get:
+      summary: "Get all members in DB"
+      description: "Returns a list of all Members"
+      operationId: "getPerson"
+      responses:
+        "200":
+          description: 'A list of Member Object'
+          content:
+            'application/json':
+              schema:
+                type: "array"
+                items:
+                  $ref: '#/components/schemas/Person'
+    post:
+      summary: "Create a Member"
+      description: "Creates a Member in the database and returns the id in the message on success"
+      operationId: "createMember"
+      requestBody:
+        description: "A representation of a member"
+        content:
+          'application/json':
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                notes:
+                  type: string
+            example:
+              person:
+                summary: "Member in JSON"
+                value:
+                  type: object
+                  required:
+                    - name
+                  properties:
+                    name:
+                      type: string
+                    notes:
+                      type: string
+        required: true
+      responses:
+        "201":
+          description: "Person created"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiMessage'
+  /member/{memberId}:
+    get:
+      summary: "Get Member by ID"
+      description: "Returns a single Member"
+      operationId: "getMemberById"
+      parameters:
+        - name: "memberId"
+          in: "path"
+          description: "ID of member to return"
+          required: true
+          schema:
+            $ref: '#/components/schemas/MemberId'
+      responses:
+        "200":
+          description: "Member found with the given ID"
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/Member"
+        "404":
+          description: "Member not found"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        "500":
+          description: "An internal server error"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    put:
+      summary: "Update Member"
+      operationId: "updateMember"
+      parameters:
+        - name: "memberId"
+          in: "path"
+          description: "ID of member to update"
+          required: true
+          schema:
+            $ref: '#/components/schemas/Member'
+      requestBody:
+        description: "A representation of the changes to be made to the Member. Undefined fields will not be changed."
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/ModifiableMember'
+      responses:
+        "200":
+          description: "Successfully updated"
+          content:
+            'application/text':
+              example: "ok"
+    delete:
+      summary: "Delete Member"
+      operationId: "deleteMember"
+      parameters:
+        - name: "personId"
+          in: "path"
+          description: "ID of person to delete. Deleting a member doesn't actually remove them from the system but marks them as deleted, available for later recovery. Data Protection Officer of the organisation must know the process to fully remove a member from the database for GDPR compliance."
+          required: true
+          schema:
+            $ref: '#/components/schemas/PersonId'
+      responses:
+        "204":
+          description: "No content on successful delete"
+  /user:
+    get:
+      summary: 'Sample endpoint: Returns details about a particular user'
+      operationId: listUser
+      tags:
+        - user
+      parameters:
+        - name: id
+          in: query
+          description: ID of the user
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: 'Sample response: Details about a user by ID'
+          headers:
+            x-next:
+              description: A link to the next page of responses
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    MemberId:
+      type: integer
+      format: int64
+    Member:
+      type: object
+      required:
+        - name
+        - id
+      properties:
+        id:
+          $ref: '#/components/schemas/MemberId'
+        name:
+          type: string
+        notes:
+          type: string
+    ModifiableMember:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        notes:
+          type: string
+    User:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        tag:
+          type: string
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    ApiError:
+      type: object
+      required:
+        - error
+        - status
+      properties:
+        error:
+          type: string
+        status:
+          type: integer
+          format: int32
+    ApiMessage:
+      type: object
+      required:
+        - message
+        - status
+      properties:
+        message:
+          type: string
+        status:
+          type: integer
+          format: int32
